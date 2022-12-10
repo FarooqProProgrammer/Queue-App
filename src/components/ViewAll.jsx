@@ -3,7 +3,7 @@ import app from '../config/app'
 import { collection, query, getDocs ,getFirestore} from "firebase/firestore";
 import { useState } from 'react';
 import { Button, Space } from 'antd';
-import { useNavigate,Link} from "react-router-dom";
+import { Link} from "react-router-dom";
 
 function ViewAll() {
 
@@ -31,7 +31,7 @@ function ViewAll() {
     }
 
 
-    const navigate = useNavigate();
+    
 
 
   return (
