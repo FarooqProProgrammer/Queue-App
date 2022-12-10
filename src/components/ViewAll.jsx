@@ -3,6 +3,7 @@ import app from '../config/app'
 import { collection, query, getDocs ,getFirestore} from "firebase/firestore";
 import { useState } from 'react';
 import { Button, Space } from 'antd';
+import { useNavigate,Link} from "react-router-dom";
 
 function ViewAll() {
 
@@ -28,6 +29,11 @@ function ViewAll() {
        
         });
     }
+
+
+    const navigate = useNavigate();
+
+
   return (
     <div className='w-full h-[500px] border-2 border-black mt-[100px]'>
             <p className='text-3xl font-black text-center'>View All Queues</p>
@@ -41,7 +47,7 @@ function ViewAll() {
                         <p className='text-2xl font-black'>{item.Title}</p>
                         <Space wrap>
                             <Button type="primary" className='bg-[#34495e] w-[100px] h-[50px] '>Delete</Button>
-                            <Button type="primary" className='bg-[#34495e] w-[100px] h-[50px]'>View</Button>
+                            <Link  to={'/view/'+item.id} type="primary" className='btn btn-primary bg-[#34495e] w-[100px] h-[50px]'>View</Link>
                             
                         </Space>
                     </div>
