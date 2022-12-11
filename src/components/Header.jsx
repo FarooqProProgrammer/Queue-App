@@ -1,7 +1,7 @@
 import React,{useState} from 'react'
 import {Link} from 'react-router-dom'
 import { Button, Input ,Space , Modal  } from 'antd';
-import {getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword} from "firebase/auth";
+import {getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,signInWithPopup,GoogleAuthProvider } from "firebase/auth";
 import { doc, setDoc ,getFirestore} from "firebase/firestore"; 
 import Box from '@mui/material/Box';
 import Buttons from '@mui/material/Button';
@@ -12,8 +12,8 @@ import app from '../config/app'
 function Header() {
     const db = getAuth(app);
     const firestore = getFirestore(app)
-
- 
+    const provider = new GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     // ================= Use States =======================
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [email,setEmail] = useState();
@@ -90,16 +90,24 @@ function Header() {
 
     // ================== Register ============================
     function SignIn (){
-      signInWithEmailAndPassword(db, email, password)
-      .then((userCredential) => {
-        // Signed in 
-        const user = userCredential.user;
-        console.log("Success");
+      signInWithPopup(db, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        console.log(user);
         // ...
-      })
-      .catch((error) => {
+      }).catch((error) => {
+        // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
       });
     }
 
@@ -135,14 +143,14 @@ function Header() {
         </div>
 
         <Space wrap>
-            <Button onClick={showModal} type="primary" className='w-[100px] h-[40px] bg-[#7f8c8d]'>Login</Button>
+            <Button onClick={SignIn} type="primary" className='w-[100px] h-[40px] bg-[#7f8c8d]'>Login</Button>
             <Button onClick={handleOpen} type="primary" className='w-[100px] h-[40px] bg-[#7f8c8d]'>Register</Button>
            
 
         </Space>
 
 
-        <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        {/* <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
             <div className='w-[full] h-[400px] border-2 border-black flex flex-col justify-around items-center'>
             <Input className='w-[80%]' onChange={Username} placeholder="Enter Email" />
             <Input className='w-[80%]' onChange={pass} type='password' placeholder="Enter Password" />
@@ -150,7 +158,7 @@ function Header() {
               <Button  type="primary" onClick={SignIn} className='w-[100px] h-[40px] bg-[#7f8c8d]'>Sign In</Button>
             </Space>
             </div>
-        </Modal>
+        </Modal> */}
 
 
 
